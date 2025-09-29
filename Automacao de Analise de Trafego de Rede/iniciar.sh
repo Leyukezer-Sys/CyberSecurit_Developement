@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================
-# INSTALADOR DO ANALISADOR DE TRÁFEGO DE REDE
+# ANALISADOR DE TRÁFEGO - INSTALADOR & EXECUTOR
 # =============================================
 
 set -e  # Para em caso de erro
@@ -31,11 +31,46 @@ log_error() {
 }
 
 # Banner de início
-echo -e "${BLUE}"
-echo "============================================="
-echo "   INSTALADOR ANALISADOR DE TRÁFEGO"
-echo "============================================="
-echo -e "${NC}"
+show_banner() {
+    echo -e "${GREEN}"
+    echo "============================================="
+    echo "   ANALISADOR DE TRÁFEGO DE REDE"
+    echo "============================================="
+    echo -e "${NC}"
+}
+
+# Verificar dependências
+check_dependencies() {
+    local missing=0
+    
+    echo "Verificando dependências..."
+    
+    # Verificar tcpdump
+    if ! command -v tcpdump &> /dev/null; then
+        echo -e "${RED}✗ tcpdump não encontrado${NC}"
+        missing=1
+    else
+        echo -e "${GREEN}✓ tcpdump instalado${NC}"
+    fi
+    
+    # Verificar python3
+    if ! command -v python3 &> /dev/null; then
+        echo -e "${RED}✗ python3 não encontrado${NC}"
+        missing=1
+    else
+        echo -e "${GREEN}✓ python3 instalado${NC}"
+    fi
+    
+    # Verificar script principal
+    if [ ! -f "analise_trafego.py" ]; then
+        echo -e "${RED}✗ analise_trafego.py não encontrado${NC}"
+        missing=1
+    else
+        echo -e "${GREEN}✓ Script principal encontrado${NC}"
+    fi
+    
+    return $missing
+}
 
 # Verificar se é root
 check_root() {
@@ -157,8 +192,8 @@ test_functionality() {
     fi
 }
 
-# Mostrar resumo
-show_summary() {
+# Mostrar resumo da instalação
+show_install_summary() {
     echo -e "${GREEN}"
     echo "============================================="
     echo "         INSTALAÇÃO CONCLUÍDA!"
@@ -167,9 +202,6 @@ show_summary() {
     
     log_success "Sistema pronto para uso!"
     echo
-    log_info "PARA EXECUTAR:"
-    echo "  sudo python3 analise_trafego.py"
-    echo
     log_info "FUNCIONALIDADES DISPONÍVEIS:"
     echo "  ✓ Verificação de interfaces de rede"
     echo "  ✓ Monitoramento em tempo real"
@@ -177,11 +209,14 @@ show_summary() {
     echo "  ✓ Detecção de port scans"
     echo "  ✓ Relatórios em CSV"
     echo
-    log_warning "NOTA: Sempre execute com sudo para total funcionalidade"
 }
 
-# Função principal
-main() {
+# Função de instalação completa
+run_installation() {
+    echo -e "${YELLOW}"
+    echo "Iniciando instalação das dependências..."
+    echo -e "${NC}"
+    
     log_info "Iniciando instalação..."
     check_root
     detect_distro
@@ -189,7 +224,52 @@ main() {
     verify_installations
     check_python_script
     test_functionality
-    show_summary
+    show_install_summary
+}
+
+# Função para executar o analisador
+run_analyzer() {
+    echo -e "${GREEN}"
+    echo "Todas as dependências OK!"
+    echo "Iniciando analisador de tráfego..."
+    echo -e "${NC}"
+    
+    # Verificar se está rodando como root
+    if [ "$EUID" -ne 0 ]; then
+        echo -e "${YELLOW}Aviso: Executando sem sudo, algumas funcionalidades podem ser limitadas${NC}"
+        echo -e "${YELLOW}Para experiência completa, execute: sudo python3 analise_trafego.py${NC}"
+        echo
+        read -p "Pressione Enter para continuar sem sudo ou Ctrl+C para sair e executar com sudo..."
+        python3 analise_trafego.py
+    else
+        python3 analise_trafego.py
+    fi
+}
+
+# Função principal
+main() {
+    show_banner
+    
+    # Verificar dependências
+    check_dependencies
+    
+    # Tomar ação baseada no resultado
+    if [ $? -eq 0 ]; then
+        run_analyzer
+    else
+        run_installation
+        
+        # Após instalação, verificar novamente e executar se estiver OK
+        echo
+        echo -e "${YELLOW}Verificando dependências após instalação...${NC}"
+        if check_dependencies; then
+            run_analyzer
+        else
+            echo -e "${RED}Erro: Ainda faltam dependências após instalação${NC}"
+            echo -e "${YELLOW}Tente instalar manualmente: sudo apt install tcpdump python3 python3-pip${NC}"
+            exit 1
+        fi
+    fi
 }
 
 # Executar função principal

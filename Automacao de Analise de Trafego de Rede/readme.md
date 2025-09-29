@@ -13,14 +13,11 @@ Sistema interativo para captura e análise de tráfego de rede em tempo real com
 
 ## Scripts de Instalação e Execução
 
-### 1. `instalar.sh`
+### 1. `iniciar.sh`
 
 - Instala todas as dependências automaticamente
 - Detecta a distribuição Linux
 - Verifica instalações
-
-### 2. `executar_analisador.sh`
-
 - Menu interativo para execução
 - Múltiplas opções de execução
 - Verificação de dependências
@@ -32,14 +29,10 @@ Sistema interativo para captura e análise de tráfego de rede em tempo real com
 
 ```bash
 # Tornar executável
-chmod +x instalar_analisador.sh
-chmod +x executar_analisador.sh
+chmod +x iniciar.sh
 
-# Instalar dependências
-./instalar_analisador.sh
-
-# Executar analisador
-./executar_analisador.sh
+# Execute
+./iniciar.sh
 ```
 
 ## Como Executar Manualmente
