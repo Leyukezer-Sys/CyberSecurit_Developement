@@ -9,14 +9,47 @@ Sistema interativo para captura e análise de tráfego de rede em tempo real com
 - tcpdump instalado
 - Privilégios de root/sudo
 
-### Instalação das dependências:
+# Instalação das dependências:
+
+## Scripts de Instalação e Execução
+
+### 1. `instalar.sh`
+
+- Instala todas as dependências automaticamente
+- Detecta a distribuição Linux
+- Verifica instalações
+
+### 2. `executar_analisador.sh`
+
+- Menu interativo para execução
+- Múltiplas opções de execução
+- Verificação de dependências
+- Execução com/sudo sudo
+
+## 🚀 Como Usar
+
+### Instalação Rápida:
+
+```bash
+# Tornar executável
+chmod +x instalar_analisador.sh
+chmod +x executar_analisador.sh
+
+# Instalar dependências
+./instalar_analisador.sh
+
+# Executar analisador
+./executar_analisador.sh
+```
+
+## Como Executar Manualmente
+
+Instalando as dependencias
 
 ```bash
 sudo apt update
 sudo apt install tcpdump python3 python3-pip
 ```
-
-## Como Executar
 
 1. Executar o sistema interativo:
 
@@ -31,16 +64,15 @@ python3 analise_trafego.py
 2. Fluxo de uso recomendado:  
    Opção 1: Detectar interface de rede automaticamente
 
+   Opção 2: Monitorar tráfego em tempo real (visualização)
 
-    Opção 2: Monitorar tráfego em tempo real (visualização)
+   Opção 3: Capturar tráfego por 60 segundos
 
-    Opção 3: Capturar tráfego por 60 segundos
+   Opção 4: Analisar tráfego e gerar relatório
 
-    Opção 4: Analisar tráfego e gerar relatório
+   Opção 5: Visualizar resultados
 
-    Opção 5: Visualizar resultados
-
-    Opção 6: Exportar resultados
+   Opção 6: Exportar resultados
 
 ## Critério de Port Scan
 
@@ -57,32 +89,28 @@ Um IP é marcado como port scan quando:
 1. Tráfego Baixo
    Em ambientes com pouco tráfego, pode não detectar port scans reais
 
-
-    Recomendado executar durante atividades normais de rede
+   Recomendado executar durante atividades normais de rede
 
 2. Falsos Positivos
    Serviços legítimos que fazem varredura (ex: scanners de vulnerabilidade internos)
 
+   Aplicações que conectam em múltiplas portas (ex: P2P, atualizações)
 
-    Aplicações que conectam em múltiplas portas (ex: P2P, atualizações)
-
-    Balanceadores de carga podem gerar múltiplas conexões
+   Balanceadores de carga podem gerar múltiplas conexões
 
 3. Falsos Negativos
    Port scans lentos (menos de 10 portas por minuto)
 
+   Scans distribuídos entre múltiplos IPs
 
-    Scans distribuídos entre múltiplos IPs
-
-    Tráfego criptografado ou em portas não monitoradas
+   Tráfego criptografado ou em portas não monitoradas
 
 4. Dependências do Sistema
    Requer privilégios de root para captura completa
 
+   Pode não detectar todas as interfaces em sistemas complexos
 
-    Pode não detectar todas as interfaces em sistemas complexos
-
-    Performance pode variar com volume de tráfego
+   Performance pode variar com volume de tráfego
 
 ## Exemplo de Saída
 
