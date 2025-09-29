@@ -1,76 +1,94 @@
-# ATR (Analisador de Tráfego de Rede)
+# Analisador de Tráfego de Rede
 
-Script Python para análise de tráfego de rede e detecção de port scans.
+Sistema interativo para captura e análise de tráfego de rede em tempo real com detecção de port scans.
+
+## Pré-requisitos
+
+- Sistema Linux
+- Python 3.6+
+- tcpdump instalado
+- Privilégios de root/sudo
+
+### Instalação das dependências:
+
+```bash
+sudo apt update
+sudo apt install tcpdump python3 python3-pip
+```
 
 ## Como Executar
 
-### 1. Capturar Tráfego com tcpdump
-
-**Opção A: Script automático**
-```bash
-chmod +x capturar_trafego.sh
-./capturar_trafego.sh
-```
-
-**Opção B: Comando manual**
-```bash
-# Capturar tráfego TCP por 5 minutos
-timeout 300 tcpdump -i any -t -n 'tcp' > trafego.txt
-
-# Ou capturar para arquivo pcap e converter
-tcpdump -i any -w trafego.pcap -c 1000
-tcpdump -r trafego.pcap -t -n > trafego.txt
-```
-
-### 2. Executar Análise Python
+1. Executar o sistema interativo:
 
 ```bash
-python analise_trafego.py trafego.txt relatorio.csv
+# Recomendado (com privilégios completos):
+sudo python3 analise_trafego.py
+
+# Ou sem sudo (algumas funcionalidades limitadas):
+python3 analise_trafego.py
 ```
 
-## Interpretação das Colunas do CSV
+2. Fluxo de uso recomendado:  
+   Opção 1: Detectar interface de rede automaticamente
 
-- **IP**: Endereço IP de origem do tráfego analisado
-- **Total_Eventos**: Número total de conexões/eventos originados do IP
-- **Detectado_PortScan**: Indica se foi detectado comportamento de port scan
-  - "Sim": IP tentou conectar a mais de 10 portas distintas em 60 segundos
-  - "Não": Não foi detectado comportamento suspeito
+
+    Opção 2: Monitorar tráfego em tempo real (visualização)
+
+    Opção 3: Capturar tráfego por 60 segundos
+
+    Opção 4: Analisar tráfego e gerar relatório
+
+    Opção 5: Visualizar resultados
+
+    Opção 6: Exportar resultados
+
+## Critério de Port Scan
+
+Um IP é marcado como port scan quando:
+
+- Tenta conectar a mais de 10 portas distintas
+
+- Dentro de um intervalo de 60 segundos
+
+- Considera apenas portas de destino únicas
 
 ## Limitações e Considerações
 
-### Limitações Técnicas
-1. **Falsos Positivos**: Aplicativos legítimos podem gerar múltiplas conexões
-2. **Tráfego Baixo**: Poucos dados podem não representar padrões reais
-3. **Janela de Tempo**: Janela fixa de 60 segundos pode não capturar scans lentos
+1. Tráfego Baixo
+   Em ambientes com pouco tráfego, pode não detectar port scans reais
 
-### Fatores que Afetam Detecção
-- **Tráfego de Rede**: Volume insuficiente pode mascarar padrões
-- **NAT/Firewall**: IPs compartilhados podem distorcer resultados
-- **Protocolos**: Análise foca em TCP, ignorando outros protocolos
 
+    Recomendado executar durante atividades normais de rede
+
+2. Falsos Positivos
+   Serviços legítimos que fazem varredura (ex: scanners de vulnerabilidade internos)
+
+
+    Aplicações que conectam em múltiplas portas (ex: P2P, atualizações)
+
+    Balanceadores de carga podem gerar múltiplas conexões
+
+3. Falsos Negativos
+   Port scans lentos (menos de 10 portas por minuto)
+
+
+    Scans distribuídos entre múltiplos IPs
+
+    Tráfego criptografado ou em portas não monitoradas
+
+4. Dependências do Sistema
+   Requer privilégios de root para captura completa
+
+
+    Pode não detectar todas as interfaces em sistemas complexos
+
+    Performance pode variar com volume de tráfego
 
 ## Exemplo de Saída
-O arquivo `relatorio.csv` classifica cada IP analisado, permitindo identificar rapidamente comportamentos suspeitos na rede.
 
-## Como usar Linux:
-
-1. **Salve os arquivos** em seu diretório de trabalho
-2. **Torne executável**: `chmod +x capturar_trafego.sh`
-3. **Capture tráfego**: `./capturar_trafego.sh` (ou use seu próprio arquivo trafego.txt)
-4. **Execute análise**: `python analise_trafego.py trafego.txt relatorio.csv`
-5. **Verifique resultados**: `cat relatorio.csv`
-
-## Como Executar 
-### Passo a Passo Windows:
-```bash
-# 1. Instalar Python e dependências
-pip install psutil requests
-
-# 2. Executar script completo
-python analise_trafego_completo.py
-
-# 3. Escolher opção 1 para captura real
-# 4. Enquanto captura, gerar tráfego:
-python gerar_trafego.py
+```csv
+IP;Total_Eventos;Detectado_PortScan
+192.168.1.100;45;Não
+192.168.1.50;128;Sim
+10.0.0.15;23;Não
 ```
-Esta solução oferece uma análise robusta de tráfego com detecção eficiente de port scans e geração de relatórios detalhados.
