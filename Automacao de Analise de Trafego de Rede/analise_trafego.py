@@ -207,23 +207,44 @@ class AnalisadorTrafego:
             print(f"❌ Erro na captura: {e}")
             return False
     
-    def parse_linha(self, linha):
-        """Parseia uma linha do tcpdump extraindo timestamp, IP origem e porta destino"""
-        # Padrão: 00:00:00.000000 IP 192.168.1.100.12345 > 192.168.1.1.80: Flags [S], seq 123456
-        padrao = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+[\d\.]+\.(\d+):'
-        match = re.match(padrao, linha)
+    def converter_servico_para_porta(self, servico):
+        """Converte nomes de serviço para números de porta"""
+        servicos = {
+            'http': 80, 'https': 443, 'ssh': 22, 'ftp': 21,
+            'domain': 53, 'smtp': 25, 'pop3': 110, 'imap': 143
+        }
         
-        if match:
-            timestamp = float(match.group(1))
-            ip_origem = match.group(2)
-            porta_origem = match.group(3)
-            porta_destino = match.group(4)
-            
-            return {
-                'timestamp': timestamp,
-                'ip_origem': ip_origem,
-                'porta_destino': int(porta_destino)
-            }
+        return servicos.get(servico.lower(), 0)
+
+    def parse_linha(self, linha):
+        """Parseia uma linha do tcpdump com regex mais flexível"""
+        
+        # Padrão 1: Formato padrão com flags
+        padrao1 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+[\d\.]+\.(\d+):'
+        
+        # Padrão 2: Formato com protocolo TCP
+        padrao2 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+[\d\.]+\.(\d+)\s+tcp'
+        
+        # Padrão 3: Formato com nomes de serviço
+        padrao3 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+[\d\.]+\.(\w+):'
+        
+        for padrao in [padrao1, padrao2, padrao3]:
+            match = re.match(padrao, linha)
+            if match:
+                timestamp = float(match.group(1))
+                ip_origem = match.group(2)
+                porta_destino = match.group(4)
+                
+                # Se for nome de serviço, converte para número
+                if not porta_destino.isdigit():
+                    porta_destino = self.converter_servico_para_porta(porta_destino)
+                
+                return {
+                    'timestamp': timestamp,
+                    'ip_origem': ip_origem,
+                    'porta_destino': int(porta_destino) if porta_destino else 0
+                }
+        
         return None
     
     def analisar_trafego(self):
