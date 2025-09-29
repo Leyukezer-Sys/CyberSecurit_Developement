@@ -228,21 +228,40 @@ class AnalisadorTrafego:
         # Padrão 3: Formato com nomes de serviço
         padrao3 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+[\d\.]+\.(\w+):'
         
-        for padrao in [padrao1, padrao2, padrao3]:
+        padrao4 = r'^\s*(\d+:\d+:\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+([\d\.]+)\.(\d+):'
+        
+        padrao5 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+([\d\.]+)\.(\d+):'
+        
+        padrao6 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+([\d\.]+)\.(\d+)\s+tcp'
+        
+        padrao7 = r'^\s*(\d+\.\d+)\s+IP\s+([\d\.]+)\.(\d+)\s+>\s+([\d\.]+)\.(\w+):'
+        
+        for padrao in [padrao1, padrao2, padrao3, padrao4, padrao5, padrao6, padrao7]:
             match = re.match(padrao, linha)
             if match:
-                timestamp = float(match.group(1))
+                timestamp_str = match.group(1)
                 ip_origem = match.group(2)
-                porta_destino = match.group(4)
+                porta_origem = match.group(3)
+                ip_destino = match.group(4)
+                porta_destino = match.group(5)
                 
                 # Se for nome de serviço, converte para número
                 if not porta_destino.isdigit():
                     porta_destino = self.converter_servico_para_porta(porta_destino)
+                    
+                try:
+                    h, m, s = timestamp_str.split(':')
+                    segundos, microsegundos = s.split('.')
+                    timestamp_total = int(h)*3600 + int(m)*60 + int(segundos) + float("0." + microsegundos)
+                except:
+                    timestamp_total = 0.0
                 
                 return {
-                    'timestamp': timestamp,
+                    'timestamp': timestamp_total,
                     'ip_origem': ip_origem,
-                    'porta_destino': int(porta_destino) if porta_destino else 0
+                    'porta_origem': int(porta_origem) if porta_origem.isdigit() else 0,
+                    'ip_destino': ip_destino,
+                    'porta_destino': int(porta_destino) if porta_destino.isdigit() else 0
                 }
         
         return None
@@ -251,14 +270,16 @@ class AnalisadorTrafego:
         """Analisa o tráfego capturado e detecta port scans"""
         if not os.path.exists(self.arquivo_trafego):
             print("❌ Arquivo de tráfego não encontrado!")
-            print("   Execute primeiro a captura (opção 3)")
             return False
         
         print("🔍 Analisando tráfego...")
         
         # Estruturas para análise
         eventos_por_ip = defaultdict(int)
-        portas_por_ip = defaultdict(lambda: defaultdict(list))  # ip -> {timestamp: [portas]}
+        portas_por_ip = defaultdict(lambda: defaultdict(list))
+        
+        # DEBUG: Verificar parsing
+        ips_detectados = set()
         
         # Lê e parseia o arquivo
         total_linhas = 0
@@ -268,30 +289,49 @@ class AnalisadorTrafego:
             for num_linha, linha in enumerate(f, 1):
                 total_linhas += 1
                 dados = self.parse_linha(linha)
+                
                 if dados:
                     linhas_parseadas += 1
                     ip = dados['ip_origem']
                     timestamp = dados['timestamp']
                     porta = dados['porta_destino']
                     
-                    # Conta eventos por IP
+                    # DEBUG
+                    ips_detectados.add(ip)
+                    
+                    # Conta eventos por IP (ANÁLISE BÁSICA)
                     eventos_por_ip[ip] += 1
                     
-                    # Armazena porta por timestamp para detecção de port scan
+                    # Armazena para detecção de port scan (ANÁLISE AVANÇADA)
                     portas_por_ip[ip][timestamp].append(porta)
         
+        # DEBUG: Mostra o que foi encontrado
         print(f"📈 Estatísticas da análise:")
         print(f"   • Total de linhas no arquivo: {total_linhas}")
         print(f"   • Linhas parseadas com sucesso: {linhas_parseadas}")
         print(f"   • IPs únicos detectados: {len(eventos_por_ip)}")
         
-        # Detecta port scans
+        if eventos_por_ip:
+            print(f"   • IPs encontrados: {', '.join(sorted(eventos_por_ip.keys()))}")
+        else:
+            print("   ⚠️  NENHUM IP detectado - problema no parsing!")
+            # Mostra exemplo de linha não parseada
+            with open(self.arquivo_trafego, 'r') as f:
+                for i, linha in enumerate(f):
+                    if i < 3:  # Mostra 3 primeiras linhas
+                        print(f"      Exemplo linha {i+1}: {linha.strip()}")
+                    else:
+                        break
+            return False
+        
+        # DETECÇÃO DE PORTSCAN (funcionalidade adicional)
         portscan_detectado = {}
         for ip, timestamps in portas_por_ip.items():
             portas_unicas_60s = set()
             timestamps_ordenados = sorted(timestamps.keys())
             
             # Verifica janela deslizante de 60 segundos
+            portscan_encontrado = False
             for i, ts_inicio in enumerate(timestamps_ordenados):
                 portas_janela = set()
                 
@@ -301,13 +341,13 @@ class AnalisadorTrafego:
                     else:
                         break
                 
-                if len(portas_janela) > 10:
-                    portscan_detectado[ip] = True
+                if len(portas_janela) > 10:  # Limite para considerar portscan
+                    portscan_encontrado = True
                     break
-            else:
-                portscan_detectado[ip] = False
+            
+            portscan_detectado[ip] = portscan_encontrado
         
-        # Gera relatório CSV
+        # Gera relatório CSV com AMBAS as análises
         with open(self.arquivo_relatorio, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['IP', 'Total_Eventos', 'Detectado_PortScan'])
@@ -317,6 +357,13 @@ class AnalisadorTrafego:
                 writer.writerow([ip, total, portscan])
         
         print(f"✅ Relatório gerado: {self.arquivo_relatorio}")
+        
+        # Mostra resumo das detecções
+        portscans = sum(1 for ip in portscan_detectado.values() if ip)
+        print(f"📊 Resumo da detecção:")
+        print(f"   • IPs com comportamento normal: {len(eventos_por_ip) - portscans}")
+        print(f"   • IPs com possível portscan: {portscans}")
+        
         return True
     
     def mostrar_estatisticas(self):

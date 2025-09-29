@@ -32,7 +32,7 @@ Sistema interativo para captura e análise de tráfego de rede em tempo real com
 chmod +x iniciar.sh
 
 # Execute
-./iniciar.sh
+sudo ./iniciar.sh
 ```
 
 ## Como Executar Manualmente
@@ -59,13 +59,11 @@ python3 analise_trafego.py
 
    Opção 2: Monitorar tráfego em tempo real (visualização)
 
-   Opção 3: Capturar tráfego por 60 segundos
+   Opção 3: Capturar e Analisar tráfego e gerar relatório
 
-   Opção 4: Analisar tráfego e gerar relatório
+   Opção 4: Visualizar resultados
 
-   Opção 5: Visualizar resultados
-
-   Opção 6: Exportar resultados
+   Opção 5: E
 
 ## Critério de Port Scan
 
