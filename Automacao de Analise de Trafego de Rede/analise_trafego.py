@@ -163,7 +163,6 @@ class AnalisadorTrafego:
                 '-nn',           # Não resolver nomes
                 '-ttt',          # Timestamp relativo em segundos
                 'ip',            # Apenas pacotes IP
-                '-c', '1000',    # Limite de pacotes (evita arquivos muito grandes)
                 '-w', 'captura.pcap'  # Salva em formato pcap para análise posterior
             ]
             
@@ -327,6 +326,37 @@ class AnalisadorTrafego:
         print(f"   • IPs com PortScan detectado: {portscans}")
         print("="*50)
     
+    def realizar_analise_completa(self):
+        """Realiza análise completa: captura por 60s e mostra estatísticas"""
+        if not self.interface:
+            print("❌ Nenhuma interface selecionada. Use a opção 1 primeiro.")
+            return False
+        
+        print("\n" + "="*60)
+        print("🔍 ANÁLISE COMPLETA DE TRÁFEGO")
+        print("="*60)
+        
+        # Passo 1: Capturar tráfego
+        print("\n🎯 FASE 1: Capturando tráfego por 60 segundos...")
+        if not self.capturar_trafego(60):
+            return False
+        
+        # Passo 2: Analisar tráfego
+        print("\n🎯 FASE 2: Analisando tráfego capturado...")
+        if not self.analisar_trafego():
+            return False
+        
+        # Passo 3: Mostrar estatísticas
+        print("\n🎯 FASE 3: Estatísticas da análise...")
+        self.mostrar_estatisticas()
+        
+        print(f"\n✅ Análise completa concluída!")
+        print(f"💾 Dados salvos em: {self.arquivo_trafego}")
+        print(f"📊 Relatório gerado: {self.arquivo_relatorio}")
+        print(f"📈 Use a opção 6 para exportar o relatório completo")
+        
+        return True
+    
     def monitorar_tempo_real(self, duracao=30):
         """Monitora tráfego em tempo real (visualização básica)"""
         if not self.interface:
@@ -372,6 +402,32 @@ class AnalisadorTrafego:
             print("\n⏹️  Monitoramento interrompido pelo usuário")
         except Exception as e:
             print(f"❌ Erro no monitoramento: {e}")
+    
+    def exportar_relatorio(self):
+        """Exporta/mostra o relatório completo"""
+        if not os.path.exists(self.arquivo_relatorio):
+            print("❌ Nenhum relatório encontrado!")
+            print("   Execute primeiro a análise completa (opção 3)")
+            return
+        
+        print(f"\n📋 CONTEÚDO DO RELATÓRIO: {self.arquivo_relatorio}")
+        print("="*50)
+        
+        with open(self.arquivo_relatorio, 'r') as f:
+            conteudo = f.read()
+            print(conteudo)
+        
+        print("="*50)
+        print(f"✅ Relatório exportado: {self.arquivo_relatorio}")
+        
+        # Oferece opção para salvar com outro nome
+        salvar_como = input("\nDeseja salvar com outro nome? (s/N): ").strip().lower()
+        if salvar_como == 's':
+            novo_nome = input("Novo nome do arquivo (ex: relatorio_scan.csv): ").strip()
+            if novo_nome:
+                import shutil
+                shutil.copy2(self.arquivo_relatorio, novo_nome)
+                print(f"✅ Relatório salvo como: {novo_nome}")
 
 def main():
     analisador = AnalisadorTrafego()
@@ -382,10 +438,9 @@ def main():
         print("="*60)
         print("1 - Verificar interfaces disponíveis")
         print("2 - Monitorar tráfego em tempo real (30s)")
-        print("3 - Capturar tráfego para análise (60s)")
-        print("4 - Analisar tráfego capturado")
-        print("5 - Mostrar estatísticas do relatório")
-        print("6 - Exportar relatório completo")
+        print("3 - Realizar análise de tráfego (60s captura + análise)")
+        print("4 - Mostrar estatísticas do último relatório")
+        print("5 - Exportar relatório completo")
         print("0 - Sair")
         print("-"*60)
         
@@ -414,34 +469,13 @@ def main():
             analisador.monitorar_tempo_real(30)
         
         elif opcao == '3':
-            if not analisador.interface:
-                print("❌ Nenhuma interface selecionada. Use a opção 1 primeiro.")
-                continue
-                
-            duracao = input("Duração da captura (segundos) [60]: ").strip()
-            try:
-                duracao = int(duracao) if duracao else 60
-            except:
-                duracao = 60
-            
-            analisador.capturar_trafego(duracao)
+            analisador.realizar_analise_completa()
         
         elif opcao == '4':
-            if analisador.analisar_trafego():
-                analisador.mostrar_estatisticas()
-        
-        elif opcao == '5':
             analisador.mostrar_estatisticas()
         
-        elif opcao == '6':
-            if not os.path.exists(analisador.arquivo_relatorio):
-                print("❌ Execute a análise primeiro (opção 4)")
-            else:
-                print(f"📋 Conteúdo do relatório {analisador.arquivo_relatorio}:")
-                print("-" * 40)
-                with open(analisador.arquivo_relatorio, 'r') as f:
-                    print(f.read())
-                print(f"✅ Relatório exportado: {analisador.arquivo_relatorio}")
+        elif opcao == '5':
+            analisador.exportar_relatorio()
         
         elif opcao == '0':
             print("👋 Saindo...")
