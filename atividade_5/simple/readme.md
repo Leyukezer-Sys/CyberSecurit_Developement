@@ -70,6 +70,7 @@ O arquivo `trafego.txt` conterá linhas no formato:
 ```
 
 **Campos:**
+
 - **Timestamp**: Tempo relativo em segundos
 - **IP Origem**: Endereço IP e porta de origem
 - **IP Destino**: Endereço IP e porta de destino
@@ -88,22 +89,26 @@ O arquivo `trafego.txt` conterá linhas no formato:
 ```
 /
 ├── trafego.txt          # Arquivo de saída com a captura
+├── analise_trafego.py          # script de análise de trafego
 └── README.md           # Este arquivo
 ```
 
 ## 🎯 Exemplos de Uso
 
 ### Capturar em interface Wi-Fi
+
 ```bash
 sudo timeout 60 tcpdump -i wlan0 -nn -ttt ip > trafego.txt
 ```
 
 ### Capturar com mais detalhes
+
 ```bash
 sudo timeout 60 tcpdump -i eth0 -nn -ttt -v ip > trafego_detalhado.txt
 ```
 
 ### Capturar apenas tráfego TCP
+
 ```bash
 sudo timeout 60 tcpdump -i eth0 -nn -ttt tcp > trafego_tcp.txt
 ```
@@ -123,23 +128,21 @@ sudo timeout 60 tcpdump -i eth0 -nn -ttt tcp > trafego_tcp.txt
 
 ## 📈 Próximos Passos
 
-Após a captura, você pode:
-- Analisar padrões de tráfego
-- Identificar serviços mais acessados
-- Detectar possíveis anomalias
-- Gerar estatísticas de uso da rede
+Após a captura, você inicia o `analise_trafego.py`:
 
-## ❓ Solução de problemas
+```bash
 
-**Problema**: "tcpdump: eth0: No such device exists"
-**Solução**: Verifique o nome da interface com `ip addr show`
+# Executar o script Python
+python3 analise_trafego.py
 
-**Problema**: "tcpdump: no suitable device found"
-**Solução**: Execute com sudo e verifique as permissões
+```
 
-**Problema**: Arquivo vazio após captura
-**Solução**: Gere tráfego de rede durante a captura
+### Verificar os Resultados
 
----
+```bash
+# Visualizar o relatório gerado
+cat relatorio.csv
 
-*Este projeto é para fins educacionais. Use com responsabilidade.*
+# Ou em formato tabular (se disponível)
+column -t -s, relatorio.csv
+```
