@@ -421,7 +421,7 @@ class AnalisadorTrafego:
         print(f"\n✅ Análise completa concluída!")
         print(f"💾 Dados salvos em: {self.arquivo_trafego}")
         print(f"📊 Relatório gerado: {self.arquivo_relatorio}")
-        print(f"📈 Use a opção 6 para exportar o relatório completo")
+        print(f"📈 Use a opção 5 para exportar o relatório completo")
         
         return True
     
@@ -478,7 +478,7 @@ class AnalisadorTrafego:
             print("   Execute primeiro a análise completa (opção 3)")
             return
         
-        print(f"\n📋 CONTEÚDO DO RELATÓRIO: {self.arquivo_relatorio}")
+        print("\n📋 CONTEÚDO DO RELATÓRIO: {self.arquivo_relatorio}")
         print("="*50)
         
         with open(self.arquivo_relatorio, 'r') as f:
@@ -508,7 +508,7 @@ def main():
         print("2 - Monitorar tráfego em tempo real (30s)")
         print("3 - Realizar análise de tráfego (60s captura + análise)")
         print("4 - Mostrar estatísticas do último relatório")
-        print("5 - Exportar relatório completo")
+        # print("5 - Exportar relatório completo")
         print("0 - Sair")
         print("-"*60)
         
@@ -542,8 +542,8 @@ def main():
         elif opcao == '4':
             analisador.mostrar_estatisticas()
         
-        elif opcao == '5':
-            analisador.exportar_relatorio()
+        #elif opcao == '5':
+        #    analisador.exportar_relatorio()
         
         elif opcao == '0':
             print("👋 Saindo...")
