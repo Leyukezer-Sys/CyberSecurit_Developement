@@ -1,25 +1,11 @@
- 00:00:00.000000 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270707893 ecr 0,nop,wscale 7,tfo  cookiereq,nop,nop], length 0
- 00:00:01.062551 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270708955 ecr 0,nop,wscale 7], length 0
- 00:00:01.023582 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270709979 ecr 0,nop,wscale 7], length 0
- 00:00:01.022033 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270711001 ecr 0,nop,wscale 7], length 0
- 00:00:01.023718 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270712025 ecr 0,nop,wscale 7], length 0
- 00:00:01.031471 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270713056 ecr 0,nop,wscale 7], length 0
- 00:00:02.040548 IP 10.0.2.15.41116 > 8.8.4.4.53: Flags [S], seq 254173403, win 64240, options [mss 1460,sackOK,TS val 1270715097 ecr 0,nop,wscale 7], length 0
- 00:00:03.045493 IP 10.0.2.15.51317 > 8.8.8.8.53: 1358+ [1au] A? connectivity-check.ubuntu.com. (58)
- 00:00:00.000071 IP 10.0.2.15.38299 > 8.8.8.8.53: 56597+ [1au] AAAA? connectivity-check.ubuntu.com. (58)
- 00:00:05.255542 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270723398 ecr 0,nop,wscale 7,tfo  cookiereq,nop,nop], length 0
- 00:00:01.052116 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270724450 ecr 0,nop,wscale 7], length 0
- 00:00:01.014795 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270725465 ecr 0,nop,wscale 7], length 0
- 00:00:01.024832 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270726489 ecr 0,nop,wscale 7], length 0
- 00:00:01.023999 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270727513 ecr 0,nop,wscale 7], length 0
- 00:00:01.026600 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270728540 ecr 0,nop,wscale 7], length 0
- 00:00:02.048955 IP 10.0.2.15.37582 > 8.8.4.4.53: Flags [S], seq 82608243, win 64240, options [mss 1460,sackOK,TS val 1270730589 ecr 0,nop,wscale 7], length 0
- 00:00:03.053073 IP 10.0.2.15.46367 > 8.8.8.8.53: 56597+ [1au] AAAA? connectivity-check.ubuntu.com. (58)
- 00:00:00.000094 IP 10.0.2.15.36447 > 8.8.8.8.53: 1358+ [1au] A? connectivity-check.ubuntu.com. (58)
- 00:00:05.317157 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270738959 ecr 0,nop,wscale 7,tfo  cookiereq,nop,nop], length 0
- 00:00:01.375414 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270740335 ecr 0,nop,wscale 7], length 0
- 00:00:01.002390 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270741337 ecr 0,nop,wscale 7], length 0
- 00:00:01.026039 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270742363 ecr 0,nop,wscale 7], length 0
- 00:00:01.032446 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270743396 ecr 0,nop,wscale 7], length 0
- 00:00:01.384197 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270744780 ecr 0,nop,wscale 7], length 0
- 00:00:02.133980 IP 10.0.2.15.57434 > 8.8.4.4.53: Flags [S], seq 4258713373, win 64240, options [mss 1460,sackOK,TS val 1270746914 ecr 0,nop,wscale 7], length 0
+ 00:00:00.000000 IP 10.0.2.15.40878 > 8.8.8.8.53: 51742+ [1au] AAAA? connectivity-check.ubuntu.com. (58)
+ 00:00:00.057130 IP 8.8.8.8.53 > 10.0.2.15.40878: 51742 12/0/1 AAAA 2620:2d:4000:1::22, AAAA 2001:67c:1562::23, AAAA 2620:2d:4000:1::2b, AAAA 2620:2d:4000:1::23, AAAA 2620:2d:4000:1::96, AAAA 2620:2d:4000:1::2a, AAAA 2620:2d:4002:1::198, AAAA 2620:2d:4000:1::98, AAAA 2620:2d:4002:1::197, AAAA 2620:2d:4002:1::196, AAAA 2620:2d:4000:1::97, AAAA 2001:67c:1562::24 (394)
+ 00:00:03.890511 IP 10.0.2.15.60584 > 185.199.110.133.443: Flags [.], ack 7238306, win 65535, length 0
+ 00:00:00.000261 IP 185.199.110.133.443 > 10.0.2.15.60584: Flags [.], ack 1, win 65535, length 0
+ 00:00:26.318703 IP 10.0.2.15.56834 > 140.82.113.25.443: Flags [.], ack 7364338, win 65535, length 0
+ 00:00:00.000308 IP 140.82.113.25.443 > 10.0.2.15.56834: Flags [.], ack 1, win 65535, length 0
+ 00:00:14.757113 IP 140.82.113.25.443 > 10.0.2.15.56834: Flags [P.], seq 1:26, ack 1, win 65535, length 25
+ 00:00:00.000515 IP 10.0.2.15.56834 > 140.82.113.25.443: Flags [P.], seq 1:30, ack 26, win 65535, length 29
+ 00:00:00.000261 IP 140.82.113.25.443 > 10.0.2.15.56834: Flags [.], ack 30, win 65535, length 0
+ 00:00:08.404326 IP 10.0.2.15.60584 > 185.199.110.133.443: Flags [.], ack 1, win 65535, length 0
+ 00:00:00.000311 IP 185.199.110.133.443 > 10.0.2.15.60584: Flags [.], ack 1, win 65535, length 0

@@ -421,7 +421,7 @@ class AnalisadorTrafego:
         print(f"\n✅ Análise completa concluída!")
         print(f"💾 Dados salvos em: {self.arquivo_trafego}")
         print(f"📊 Relatório gerado: {self.arquivo_relatorio}")
-        print(f"📈 Use a opção 5 para exportar o relatório completo")
+        #print(f"📈 Use a opção 5 para exportar o relatório completo")
         
         return True
     
