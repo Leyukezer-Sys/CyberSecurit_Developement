@@ -349,11 +349,11 @@ class AnalisadorTrafego:
         
         # Gera relatório CSV com AMBAS as análises
         with open(self.arquivo_relatorio, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
+            writer = csv.writer(csvfile, delimiter=';')
             writer.writerow(['IP', 'Total_Eventos', 'Detectado_PortScan'])
             
             for ip, total in sorted(eventos_por_ip.items(), key=lambda x: x[1], reverse=True):
-                portscan = "Sim" if portscan_detectado.get(ip, False) else "Não"
+                portscan = 'Sim' if portscan_detectado.get(ip, False) else 'Nao'
                 writer.writerow([ip, total, portscan])
         
         print(f"✅ Relatório gerado: {self.arquivo_relatorio}")

@@ -1,5 +1,5 @@
-IP,Total_Eventos,Detectado_PortScan
-10.0.2.15,5,Não
-140.82.113.25,3,Não
-185.199.110.133,2,Não
-8.8.8.8,1,Não
+IP;Total_Eventos;Detectado_PortScan
+10.0.2.15;5;Não
+140.82.113.25;3;Não
+185.199.110.133;2;Não
+8.8.8.8;1;Não
