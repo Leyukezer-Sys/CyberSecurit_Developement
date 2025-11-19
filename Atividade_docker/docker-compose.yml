@@ -32,6 +32,10 @@ services:
       - db
     networks:
       - webNetwork
+  
+networks:
+  webNetwork:
+    driver: bridge
 
 volumes:
   db_data:
